@@ -1,4 +1,4 @@
 node_modules
-.env
+.env.exemple
 .env.test
 .env.develop
