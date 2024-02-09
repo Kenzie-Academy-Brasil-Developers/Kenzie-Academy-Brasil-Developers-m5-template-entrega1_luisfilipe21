@@ -9,8 +9,8 @@ const controller = new TaskController();
 taskRouter.post("/", middleware.validateBody, controller.create);
 taskRouter.get("/", middleware.validateBody, controller.readAll);
 
-taskRouter.use("/:taskId", middleware.validateBody)
+taskRouter.use("/:id", middleware.validateBody)
 
-taskRouter.get("/:taskId", controller.readOne);
-taskRouter.post("/:taskId", controller.update);
-taskRouter.delete("/:taskId", controller.delete);
+taskRouter.get("/:id", controller.readOne);
+taskRouter.post("/:id", controller.update);
+taskRouter.delete("/:id", controller.delete);

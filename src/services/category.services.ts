@@ -19,4 +19,8 @@ export class CategoryServices {
 
         return newTask;
     }
+
+    delete = async (categoryId : number): Promise<void> => {
+        await prisma.category.delete({where: {id: categoryId}});
+    }
 }
