@@ -10,10 +10,9 @@ export class TaskController {
         return res.status(201).json(newTask);
     }
 
-    readOne = async (req: Request, res: Response): Promise<Response> => {
-        const { task } = res.locals;
-        const readOne = await this.tasksService.read(task);
-        return res.status(200).json(readOne);
+    readById = async (req: Request, res: Response): Promise<Response> => {
+        const foundId = await this.tasksService.retreive(Number(req.params.id));
+        return res.status(200).json(foundId);
     }
 
     readAll = async (req: Request, res: Response): Promise<Response> => {
@@ -22,13 +21,14 @@ export class TaskController {
     }
 
     update = async (req: Request, res: Response): Promise<Response> => {
-        const taskId = await Number(req.params.taskId);
+        const taskId = await Number(req.params.id);
         const updateTask = await this.tasksService.update(taskId, req.body);
+
         return res.status(204).json(updateTask);
     }
 
     delete = async (req: Request, res: Response): Promise<Response> => {
-        const taskId = await Number(req.params.taskId);
+        const taskId = await Number(req.params.id);
         await this.tasksService.delete(taskId);
         return res.status(204).json();
     }

@@ -1,14 +1,16 @@
 import { prisma } from "../database/prisma";
 import { CreateTask, TaskObject, UpdateTask } from "../interfaces/tasks.interface";
+import { taskSchema } from "../schemas/tasks.schema";
 
 export class TasksService {
 
     create = async (payload: CreateTask): Promise<TaskObject> => {
-        return await prisma.task.create({ data: payload })
+        return await prisma.task.create({ data: payload });
     }
 
-    read = async (index: number): Promise<TaskObject | null> => {
-        return await prisma.task.findFirst({ where: { id: index } })
+    retreive = async (id: number) => {
+        return await prisma.task.findFirst({ where: { id } });
+
     }
 
     readMany = async (): Promise<TaskObject[]> => {
@@ -16,10 +18,10 @@ export class TasksService {
     }
 
     update = async (index: number, payload: UpdateTask): Promise<TaskObject> => {
-        return await prisma.task.update({ data: payload, where: { id: index } })
+        return await prisma.task.update({ where: { id: index }, data: { ...payload } });
     }
 
     delete = async (index: number): Promise<void> => {
-        prisma.task.delete({ where: { id: index } })
+        await prisma.task.delete({ where: { id: index } })
     }
 }
