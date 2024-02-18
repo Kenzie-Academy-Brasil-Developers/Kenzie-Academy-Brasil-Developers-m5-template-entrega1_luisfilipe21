@@ -10,8 +10,6 @@ const controller = new TaskController();
 taskRouter.post("/", middleware.validateBody(createTaskSchema), controller.create);
 taskRouter.get("/", controller.readAll);
 
-// taskRouter.use("/:id", );
-
 taskRouter.get("/:id", controller.readById);
 taskRouter.post("/:id", controller.update);
 taskRouter.delete("/:id", controller.delete);

@@ -4,7 +4,7 @@ export const taskSchema = z.object({
     id: z.number().positive(),
     title: z.string(),
     content: z.string(),
-    finished: z.boolean(),
+    finished: z.boolean().default(false),
 
     categoryId: z.number().positive().nullish(),
 })

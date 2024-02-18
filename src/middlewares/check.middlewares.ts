@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AnyZodObject } from "zod";
 import { AppError } from "../errors/AppError";
+import { prisma } from "../database/prisma";
 
 export class CheckMiddleware {
 
@@ -11,10 +12,16 @@ export class CheckMiddleware {
         }
 
 
-    categoryValid = (req: Request, res: Response, next: NextFunction): void => {
+    categoryIdValid = (req: Request, res: Response, next: NextFunction): void => {
         const { categoryId } = req.params;
-
-        if (!categoryId) {
+        
+        if(!categoryId){
+            throw new Error("Invalid category")
+        }
+        
+        const teste = prisma.category.findFirst({where: {id: +categoryId}})
+        
+        if (!teste) {
             throw new AppError("Category not found", 404)
         }
         return next();

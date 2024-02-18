@@ -5,8 +5,8 @@ export const categorySchema = z.object({
     id: z.number().positive(),
     name: z.string(),
 
-    task: taskSchema.nullish()
-})
+    tasks: taskSchema.nullish(),
+});
 
-export const createCategorySchema = categorySchema.omit({ id: true });
-export const updateCategorySchema = createCategorySchema.partial();
+export const createCategorySchema = categorySchema.omit({id: true});
+

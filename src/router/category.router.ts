@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { CategoryServices } from "../services/category.services";
+import { CategoryController } from "../controllers/category.controller";
 
 export const categoryRouter = Router();
 
-const categories = new CategoryServices();
+const categories = new CategoryController();
 
 
 categoryRouter.post("/", categories.create);

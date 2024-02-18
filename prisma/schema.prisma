@@ -15,6 +15,7 @@ model Task{
   title String
   content String
   finished Boolean @default(false)
+  
   categoryId Int? 
   category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 }
