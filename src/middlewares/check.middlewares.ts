@@ -11,21 +11,47 @@ export class CheckMiddleware {
             return next();
         }
 
+    categoryExists = async (req: Request, res: Response, next: NextFunction):Promise<void> => {
+        const categoryId = Number(req.body.categoryId);
 
-    categoryIdValid = (req: Request, res: Response, next: NextFunction): void => {
-        const { categoryId } = req.params;
+        if(categoryId){
+            const category = await prisma.category.findFirst({ where: {id: categoryId}});
+            
+            if(!category){
+                throw new AppError(403, "Category not found");
+            }
+        }
+
+        next();
+    }
+
+
+    categoryIdValid = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const id = req.params.id;
         
-        if(!categoryId){
-            throw new Error("Invalid category")
+        const validCategory = await prisma.category.findFirst({ where: { id: Number(id) } })
+        
+        if (!validCategory) {
+            throw new AppError(404, "Category not found");
         }
         
-        const teste = prisma.category.findFirst({where: {id: +categoryId}})
-        
-        if (!teste) {
-            throw new AppError("Category not found", 404)
-        }
+        res.locals.category = validCategory;
+
         return next();
     }
 
+    taskIdValid = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const task = req.params.id;
+        
+        const validTask = await prisma.task.findFirst({ where: { id: Number(task) } })
+        
+        if (!validTask) {
+            throw new AppError(404, "Task not found");
+        }
+        
+        res.locals.task = validTask;
+
+        return next();
+    }  
 
 }

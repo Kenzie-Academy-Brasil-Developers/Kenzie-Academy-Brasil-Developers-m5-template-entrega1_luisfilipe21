@@ -6,8 +6,10 @@ export const taskSchema = z.object({
     content: z.string(),
     finished: z.boolean().default(false),
 
-    categoryId: z.number().positive().nullish(),
+    categoryId: z.number().optional().nullable(),
 })
 
-export const createTaskSchema = taskSchema.omit({id:true});
+
+export const createTaskSchema = taskSchema.omit({ id: true });
 export const updateTaskSchema = createTaskSchema.partial();
+export const returnTaskSchema = taskSchema.omit({ categoryId: true });

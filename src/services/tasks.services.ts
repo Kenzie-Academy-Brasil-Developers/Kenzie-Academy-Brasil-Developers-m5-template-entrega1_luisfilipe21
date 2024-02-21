@@ -1,6 +1,5 @@
-import { number } from "zod";
 import { prisma } from "../database/prisma";
-import { CreateTask, TaskObject, UpdateTask } from "../interfaces/tasks.interface";
+import { CreateTask, ReturnTask, TaskObject, UpdateTask } from "../interfaces/tasks.interface";
 
 export class TasksService {
 
@@ -8,13 +7,20 @@ export class TasksService {
         return await prisma.task.create({ data: taskData });
     }
 
-    retreive = async (id: number) => {
-        return await prisma.task.findFirst({ where: { id } });
+    readMany = async (search?: any): Promise<ReturnTask[]> => {
+        if (!search) {
+            return await prisma.task.findMany({ include: { category: true } })
+        }
 
+
+        return await prisma.task.findMany({
+            where: { category: { name: { contains: search, mode: "insensitive" } } },
+            include: { category: true }
+        });
     }
 
-    readMany = async () => {
-        return await prisma.task.findMany();
+    retreive = async (id: number) => {
+        return await prisma.task.findFirst({ where: { id }, include: { category: true }}, );
     }
 
     update = async (index: number, taskData: UpdateTask): Promise<TaskObject> => {

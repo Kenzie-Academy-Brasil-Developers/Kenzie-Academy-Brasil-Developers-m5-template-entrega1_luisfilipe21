@@ -11,12 +11,15 @@ export class TaskController {
     }
 
     readById = async (req: Request, res: Response): Promise<Response> => {
-        const foundId = await this.tasksService.retreive(Number(req.params.id));
+        const taskId = res.locals.task.id;
+        const foundId = await this.tasksService.retreive(taskId);
         return res.status(200).json(foundId);
     }
 
     readAll = async (req: Request, res: Response): Promise<Response> => {
-        const readAll = await this.tasksService.readMany();
+        const {category} = req.query;
+        const readAll = await this.tasksService.readMany(category);
+
         return res.status(200).json(readAll);
     }
 
@@ -24,7 +27,7 @@ export class TaskController {
         const taskId = await Number(req.params.id);
         const updateTask = await this.tasksService.update(taskId, req.body);
 
-        return res.status(204).json(updateTask);
+        return res.status(200).json(updateTask);
     }
 
     delete = async (req: Request, res: Response): Promise<Response> => {
