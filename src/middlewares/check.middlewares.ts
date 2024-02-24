@@ -54,4 +54,17 @@ export class CheckMiddleware {
         return next();
     }  
 
+    validEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const email = req.body.email;
+
+        if(email){
+            const sameEmail = await prisma.user.findFirst({where: {email: email}});
+
+            if(sameEmail){
+                throw new AppError(409, "This email is already registered")
+            }
+        }
+        return next();
+    }
+
 }
