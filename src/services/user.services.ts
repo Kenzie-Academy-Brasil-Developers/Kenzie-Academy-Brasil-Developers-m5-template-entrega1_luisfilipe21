@@ -1,31 +1,48 @@
-import { hash } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
 import { prisma } from "../database/prisma";
-import { Createuser, ReturnUser, UserLogin } from "../interfaces/user.interface";
+import { Createuser, ReturnUser } from "../interfaces/user.interface";
 import { returnUserSchema } from "../schemas/user.schema";
 import { AppError } from "../errors/AppError";
+import { SessionCreate, SessionReturn } from "../interfaces/session.interface";
+import { sign } from "jsonwebtoken";
 
 export class UserServices {
 
     create = async (userData: Createuser): Promise<ReturnUser> => {
         userData.password = await hash(userData.password, 10);
-        
-        const newUser = await prisma.user.create({data: userData});
-        
-        return newUser
+
+        const newUser = await prisma.user.create({ data: userData });
+
+        return returnUserSchema.parse(newUser);
     }
 
-    login = async (userData: Createuser): Promise<UserLogin> => {
-        const foundUser = await prisma.user.findFirst({where: {email: userData.email}});   
-        const existsPassword = await prisma.user.findFirst({where: {password: userData.password}});
-        
-        if(!foundUser || !existsPassword) throw new AppError(404, "Email and password doesn't match");
+    login = async (userData: SessionCreate): Promise<SessionReturn> => {
+        const foundUser = await prisma.user.findFirst({ where: { email: userData.email } });
+        if (!foundUser) throw new AppError(404, "User not exists")
 
-        const returnInfo = 
+        const existsPassword = await compare(userData.password, foundUser.password);
+        if (!existsPassword) throw new AppError(401, "Email and password doesn't match");
 
-        return 
+        const secret = process.env.JWT_SECRET!;
+        const expiresIn = "1h";
+
+        const accessToken = sign({ id: foundUser.id }, secret, { expiresIn, subject: String(foundUser.id) });
+
+        const  user = ({
+            id: foundUser.id,
+            name: foundUser.name,
+            email: foundUser.email, 
+        })
+
+        const login = { accessToken, user};
+
+        return login
     }
 
-    home = () => {
+    
+    home = async (): Promise<ReturnUser[]> => {
 
+        const user = await prisma.user.findMany()
+        return returnUserSchema.array().parse(user)
     }
 }

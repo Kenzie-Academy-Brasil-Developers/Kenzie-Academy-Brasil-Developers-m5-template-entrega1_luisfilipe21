@@ -7,6 +7,7 @@ export const taskSchema = z.object({
     finished: z.boolean().default(false),
 
     categoryId: z.number().optional().nullable(),
+    userId: z.number().positive()
 })
 
 
