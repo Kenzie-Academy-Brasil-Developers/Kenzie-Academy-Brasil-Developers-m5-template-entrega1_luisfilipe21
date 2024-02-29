@@ -4,7 +4,7 @@ import { Createuser, ReturnUser } from "../interfaces/user.interface";
 import { returnUserSchema } from "../schemas/user.schema";
 import { AppError } from "../errors/AppError";
 import { SessionCreate, SessionReturn } from "../interfaces/session.interface";
-import { sign } from "jsonwebtoken";
+import { JwtPayload, sign } from "jsonwebtoken";
 
 export class UserServices {
 
@@ -40,9 +40,11 @@ export class UserServices {
     }
 
     
-    home = async (): Promise<ReturnUser[]> => {
+    home = async (decoded: JwtPayload): Promise<ReturnUser> => {
+        const id = Number(decoded.id)
+        const user = await prisma.user.findFirst({where: {id}})
 
-        const user = await prisma.user.findMany()
-        return returnUserSchema.array().parse(user)
+        if(!user) throw new AppError(401, "Token is required")
+        return returnUserSchema.parse(user)
     }
 }

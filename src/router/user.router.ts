@@ -13,5 +13,6 @@ const auth = new AuthMiddleware();
 
 userRouter.post("/", middleware.validateBody(createUserSchema), middleware.validEmail, controller.createUser);
 userRouter.post("/login", middleware.validateBody(sessionCreateSchema), controller.login);
+
 userRouter.get("/profile", auth.isAuthenticated, controller.home);
  
