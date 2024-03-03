@@ -19,15 +19,16 @@ model Task {
   categoryId Int?
   category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
-  userId Int
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade  )
-
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Category {
-  id    Int    @id @default(autoincrement())
-  name  String
-  tasks Task[]
+  id     Int    @id @default(autoincrement())
+  name   String
+  tasks  Task[]
+  userId Int?
+  user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
@@ -36,5 +37,6 @@ model User {
   email    String
   password String
 
-  tasks Task[] 
+  tasks    Task[]
+  category Category[]
 }

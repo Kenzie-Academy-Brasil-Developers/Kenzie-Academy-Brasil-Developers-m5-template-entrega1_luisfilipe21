@@ -2,12 +2,11 @@ import { z } from "zod";
 
 export const taskSchema = z.object({
     id: z.number().positive(),
-    title: z.string(),
-    content: z.string(),
+    title: z.string().min(1),
+    content: z.string().min(1),
     finished: z.boolean().default(false),
 
-    categoryId: z.number().optional().nullable(),
-    userId: z.number().positive()
+    categoryId: z.number().optional().nullable()
 })
 
 

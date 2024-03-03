@@ -15,9 +15,9 @@ export class UserController {
     }
 
     home = async (req: Request, res: Response): Promise<Response> => {
-        const {decoded} = res.locals;
+        const {sub} = res.locals.decoded;
 
-        const user = await this.userServices.home(decoded)
+        const user = await this.userServices.home(Number(sub))
         return res.status(200).json(user);
     }
 }

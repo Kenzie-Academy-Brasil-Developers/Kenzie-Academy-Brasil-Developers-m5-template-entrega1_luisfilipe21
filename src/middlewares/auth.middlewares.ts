@@ -7,12 +7,16 @@ export class AuthMiddleware{
         const auth = req.headers.authorization;
         if(!auth) throw new AppError(401, "Missing authorization");
 
-        const token = auth.split(" ")[0];
-        const secret = process.env.JWT_SECRET!;
+        const token = auth?.replace("Bearer ", "");
 
+        if(!token) throw new AppError(401, "Missing token");
+        const secret = process.env.JWT_SECRET! as string;
+
+        const decoded = verify(token, secret);
+        
         res.locals = {
             ...res.locals,
-            decoded: verify(token, secret)
+            decoded
         }
         
         return next();
